@@ -1,0 +1,23 @@
+CREATE TABLE StoryReprint (
+  id INT,
+  origin_id INT NOT NULL,
+  target_id INT NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE IssueReprint (
+  id INT,
+  origin_issue_id INT NOT NULL,
+  target_issue_id INT NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE Country (
+  id INT,
+  code CHAR(4) NOT NULL,
+  name CHAR(36) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE (code),
+  UNIQUE (name)
+);
+  
