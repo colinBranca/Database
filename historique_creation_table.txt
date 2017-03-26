@@ -42,7 +42,7 @@ CREATE TABLE Story (
   FOREIGN KEY (issue_id) REFERENCES issue (id)
 );
 
-CREATE TABLE issue (
+CREATE TABLE Issue (
   id INT,
   issue_number INT,
   series_id INT,
@@ -52,7 +52,7 @@ CREATE TABLE issue (
   page_count INT,
   indicia_frequency CHAR(10),
   editing VARCHAR(20),
-  notes VARCHAR(50),
+  notes VARCHAR(1000),
   isbn VARCHAR(20),
   valid_isbn VARCHAR(20),
   barcode VARCHAR(10),
@@ -60,6 +60,81 @@ CREATE TABLE issue (
   on_sale_date INT,
   rating INT,
   PRIMARY KEY (id),
-  FOREIGN KEY (series_id) REFERENCES series (id),
-  FOREIGN KEY (indicia_publisher) REFERENCES indicia_publisher(id)
+  FOREIGN KEY (series_id) REFERENCES Series (id),
+  FOREIGN KEY (indicia_publisher) REFERENCES IndiciaPublisher(id)
+);
+
+CREATE TABLE BrandGroup (
+  id INT,
+  name VARCHAR2(128) NOT NULL,
+  year_began SMALLINT,
+  year_ended SMALLINT,
+  notes VARCHAR2(1023),
+  url VARCHAR(128),
+  publisher_id INT NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE (name)
+);
+
+CREATE TABLE Publisher (
+  id INT,
+  name VARCHAR2(128) NOT NULL,
+  year_began SMALLINT,
+  year_ended SMALLINT,
+  notes VARCHAR2(3500),
+  url VARCHAR(128),
+  country_id INT,
+  PRIMARY KEY (id),
+  UNIQUE (name)
+);
+
+CREATE TABLE IndiciaPublisher (
+  id INT,
+  name VARCHAR2(128) NOT NULL,
+  year_began SMALLINT,
+  year_ended SMALLINT,
+  notes VARCHAR2(3500),
+  url VARCHAR(128),
+  country_id INT,
+  publisher_id INT,
+  is_surrogate NUMBER(3) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE (name)
+);
+
+CREATE TABLE Language (
+  id INT,
+  code CHAR(3) NOT NULL,
+  name CHAR(36) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE (code),
+  UNIQUE (name)
+);
+
+CREATE TABLE Series (
+  id INT,
+  name VARCHAR2(1000) NOT NULL,
+  type VARCHAR(16),
+  format VARCHAR(30),
+  publication_dates VARCHAR(200),
+  year_began SMALLINT,
+  year_ended SMALLINT,
+  first_issue_id INT,
+  last_issue_id INT,
+  publisher_id INT,
+  country_id INT,
+  language_id INT,
+  notes VARCHAR2(4000),
+  color VARCHAR(200),
+  dimensions VARCHAR(200),
+  paper_stock VARCHAR(200),
+  binding VARCHAR(200),
+  publishing_format VARCHAR(200),
+  PRIMARY KEY (id),
+  UNIQUE (name),
+  FOREIGN KEY (first_issue_id) REFERENCES Issue (id),
+  FOREIGN KEY (last_issue_id) REFERENCES Issue (id),
+  FOREIGN KEY (publisher_id) REFERENCES Publisher (id),
+  FOREIGN KEY (country_id) REFERENCES Country (id),
+  FOREIGN KEY (language_id) REFERENCES Language (id)
 );
