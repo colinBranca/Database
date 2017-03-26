@@ -20,4 +20,46 @@ CREATE TABLE Country (
   UNIQUE (code),
   UNIQUE (name)
 );
-  
+
+CREATE TABLE Story (
+  id INT,
+  type VARCHAR(50) NOT NULL,
+  title VARCHAR(50) NOT NULL,
+  feature VARCHAR(50),
+  issue_id INT NOT NULL,
+  script VARCHAR(50),
+  pencils VARCHAR(50),
+  inks VARCHAR(50),
+  color VARCHAR(50),
+  letters VARCHAR(50),
+  editing VARCHAR(50),
+  genre VARCHAR(50),
+  characters VARCHAR(50),
+  synopsis VARCHAR(150),
+  reprint_notes VARCHAR(50),
+  notes VARCHAR(50),
+  PRIMARY KEY (id),
+  FOREIGN KEY (issue_id) REFERENCES issue (id)
+);
+
+CREATE TABLE issue (
+  id INT,
+  issue_number INT,
+  series_id INT,
+  indicia_publisher-id INT,
+  publication_date CHAR(15), --je ne sais pas comment définir la date car il y plusieurs format dans le fichier csv
+  price CHAR(10),
+  page_count INT,
+  indicia_frequency CHAR(10),
+  editing VARCHAR(20),
+  notes VARCHAR(50),
+  isbn VARCHAR(20),
+  valid_isbn VARCHAR(20),
+  barcode VARCHAR(10),
+  title VARCHAR(30),
+  on_sale_date INT,
+  rating INT,
+  PRIMARY KEY (id),
+  FOREIGN KEY (series_id) REFERENCES series (id),
+  FOREIGN KEY (indicia_publisher) REFERENCES indicia_publisher(id)
+);
