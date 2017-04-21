@@ -22,6 +22,7 @@ public class SearchActivity extends AppCompatActivity{
         setContentView(R.layout.activity_search);
 
         final EditText searchText = (EditText) findViewById(R.id.search_text);
+
         Button advancedOptions = (Button) findViewById(R.id.button_advanced);
 
         advancedInvisible();

@@ -11,8 +11,7 @@
     <string name="delete">Delete</string>
     <string name="advanced_options">Advanced Options</string>
     <string name="tables_to_search">Tables to search</string>
-    <string name="search">Search</string>
+    <string name="search">Search…</string>
     <string name="queries">Queries</string>
     <string name="insert_delete">Insert/Delete</string>
-
 </resources>
