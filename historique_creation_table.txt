@@ -23,31 +23,118 @@ CREATE TABLE Country (
 
 CREATE TABLE Story (
   id INT,
-  type VARCHAR(50) NOT NULL,
+  type_id INT NOT NULL,
   title VARCHAR(50) NOT NULL,
   feature VARCHAR(50),
   issue_id INT NOT NULL,
-  script VARCHAR(50),
-  pencils VARCHAR(50),
-  inks VARCHAR(50),
-  color VARCHAR(50),
-  letters VARCHAR(50),
+  script_id INT,
+  pencils_id INT,
+  inks_id INT,
+  colors_id INT,
+  letters_id INT,
   editing VARCHAR(50),
   genre VARCHAR(50),
-  characters VARCHAR(50),
+  characters_id INT,
   synopsis VARCHAR(150),
   reprint_notes VARCHAR(50),
   notes VARCHAR(50),
   PRIMARY KEY (id),
-  FOREIGN KEY (issue_id) REFERENCES issue (id)
+  FOREIGN KEY (issue_id) REFERENCES Issue (story_id),
+  FOREIGN KEY (script_id) REFERENCES Script (story_id),
+  FOREIGN KEY (type_id) REFERENCES Story_type (id),
+  FOREIGN KEY (pencils_id) REFERENCES Pencils (story_id),
+  FOREIGN KEY (inks_id) REFERENCES Inks (story_id),
+  FOREIGN KEY (colors_id) REFERENCES Colors (story_id),
+  FOREIGN KEY (letters_id) REFERENCES Letters (story_id),
+  FOREIGN KEY (characters_id) REFERENCES Has_charaters (story_id)
+);
+
+CREATE TABLE Story_type (
+  id INT,
+  name VARCHAR(50)
+);
+
+CREATE TABLE Artists (
+  id INT,
+  name VARCHAR(50)
+);
+
+CREATE TABLE Inks (
+  id INT,
+  story_id INT,
+  artist_id INT,
+  PRIMARY (id),
+  FOREIGN KEY (story_id) REFERENCES Story (id),
+  FOREIGN KEY (artist_id) REFERENCES Artists (id)
+);
+
+CREATE TABLE Colors (
+  id INT,
+  story_id INT,
+  artist_id INT,
+  PRIMARY (id),
+  FOREIGN KEY (story_id) REFERENCES Story (id),
+  FOREIGN KEY (artist_id) REFERENCES Artists (id)
+);
+
+CREATE TABLE Pencils (
+  id INT,
+  story_id INT,
+  artist_id INT,
+  PRIMARY (id),
+  FOREIGN KEY (story_id) REFERENCES Story (id),
+  FOREIGN KEY (artist_id) REFERENCES Artists (id)
+);
+
+CREATE TABLE Authors (
+  id INT,
+  name VARCHAR(50)
+);
+
+CREATE TABLE Script (
+  id INT,
+  story_id INT,
+  author_id INT,
+  PRIMARY (id),
+  FOREIGN KEY (story_id) REFERENCES Story (id),
+  FOREIGN KEY (author_id) REFERENCES Authors (id)
+);
+
+CREATE TABLE Characters (
+  id INT,
+  name VARCHAR(50)
+);
+
+CREATE TABLE Has_charaters (
+  id INT,
+  story_id INT,
+  character_id INT,
+  PRIMARY (id),
+  FOREIGN KEY (story_id) REFERENCES Story (id),
+  FOREIGN KEY (character_id) REFERENCES Characters (id)
+);
+
+CREATE TABLE Creators (
+  id INT,
+  name VARCHAR(50)
+);
+
+CREATE TABLE Letters (
+  id INT,
+  story_id INT,
+  creators_id INT,
+  PRIMARY (id),
+  FOREIGN KEY (story_id) REFERENCES Story (id),
+  FOREIGN KEY (creators_id) REFERENCES Creators (id)
 );
 
 CREATE TABLE Issue (
   id INT,
   issue_number INT,
   series_id INT,
-  indicia_publisher-id INT,
-  publication_date CHAR(15), --je ne sais pas comment définir la date car il y plusieurs format dans le fichier csv
+  story_id INT,
+  indicia_publisher_id INT,
+  publication_date CHAR(15),
   price CHAR(10),
   page_count INT,
   indicia_frequency CHAR(10),
@@ -61,7 +148,8 @@ CREATE TABLE Issue (
   rating INT,
   PRIMARY KEY (id),
   FOREIGN KEY (series_id) REFERENCES Series (id),
-  FOREIGN KEY (indicia_publisher) REFERENCES IndiciaPublisher(id)
+  FOREIGN KEY (story_id) REFERENCES Story (id),
+  FOREIGN KEY (indicia_publisher_id) REFERENCES IndiciaPublisher (id)
 );
 
 CREATE TABLE BrandGroup (
