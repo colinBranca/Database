@@ -1,4 +1,4 @@
-package ch.epfl.database.databaseapp;
+package ch.epfl.database.databaseapp.View;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import ch.epfl.database.databaseapp.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
