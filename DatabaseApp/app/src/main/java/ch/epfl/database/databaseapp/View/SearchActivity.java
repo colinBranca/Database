@@ -1,4 +1,4 @@
-package ch.epfl.database.databaseapp;
+package ch.epfl.database.databaseapp.View;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +12,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class SearchActivity extends AppCompatActivity{
+import ch.epfl.database.databaseapp.R;
+
+public class SearchActivity extends AppCompatActivity {
 
     private int counter = 0;
 

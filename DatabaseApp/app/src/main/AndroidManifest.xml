@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="ch.epfl.database.databaseapp">
-
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".MainActivity"
+            android:name=".View.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -22,15 +22,14 @@
         </activity>
 
         <activity
-            android:name=".SearchActivity"
-            android:parentActivityName=".MainActivity"
+            android:name=".View.SearchActivity"
+            android:parentActivityName=".View.MainActivity"
             />
-        <activity android:name=".QueriesActivity"
-            android:parentActivityName=".MainActivity"
+        <activity android:name=".View.QueriesActivity"
+            android:parentActivityName=".View.MainActivity"
             />
-        <activity android:name=".InsertDeleteActivity"
-            android:parentActivityName=".MainActivity"
+        <activity android:name=".View.InsertDeleteActivity"
+            android:parentActivityName=".View.MainActivity"
             />
     </application>
-
 </manifest>
