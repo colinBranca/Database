@@ -1,18 +1,18 @@
 /*a) Print the brand group names with the highest number of Belgian indicia publishers */
 Select BG.name
-From BrandGroup BG, ()
-  Select Count(distinct *)
+From BrandGroup BG, (
+  Select COUNT(distinct *)
   From Publisher P, (
     Select *
     From IndiciaPublisher IP, Country C
-    Where IP.country_id = C.id and C.name = "Belgium")
-  Where ROWNUM = 1)
-Where BG.publisher_id = P.id
+    Where IP.country_id = C.id and C.name = 'Belgium')
+  Where P.id = IP.publisher_id)
+Where BG.publisher_id = P.id and P.ROWNUM = 1
 
 /*b) Print the ids and names of publishers of Danish book series*/
 SELECT P.id, P.name
 FROM Publisher P, Series S, Country C
-WHERE S.country_id = C.id and C.name = 'Danemark' and S.publisher_id = P.id
+WHERE S.country_id = C.id and C.name = 'Denmark' and S.publisher_id = P.id
 
 /*c) Print the names of all Swiss series that have been published in magazines */
 SELECT S.name
@@ -41,7 +41,7 @@ From (
   Where S.id = SR.origin_id
   Group By S.id, S.title
   Order By count_reprint DESC)
-Where ROWNUM=1
+Where ROWNUM <= 10
 
 /*g) Print the artists that have scripted, drawn, and colored at least one of the stories they where involved in */
 Select A
