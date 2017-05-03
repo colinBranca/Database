@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginLeft="20sp"
+    android:layout_marginStart="20sp"
+    android:layout_marginRight="20sp"
+    android:layout_marginEnd="20sp">
 
     <TabHost
         android:id="@+id/tab_host"
@@ -56,10 +60,13 @@
                         android:id="@+id/submit_insert"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20sp"
                         android:text="@string/submit"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true" />
+                        android:layout_alignTop="@+id/choose_table_insert"
+                        android:layout_toRightOf="@+id/choose_table_insert"
+                        android:layout_toEndOf="@+id/choose_table_insert"
+                        android:layout_marginTop="16sp"
+                        android:layout_marginLeft="20sp"
+                        android:layout_marginStart="20sp" />
                     </RelativeLayout>
 
                     <ListView
@@ -101,9 +108,12 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/submit"
-                            android:layout_marginTop="20sp"
-                            android:layout_alignParentTop="true"
-                            android:layout_centerHorizontal="true"/>
+                            android:layout_alignTop="@+id/choose_table_delete"
+                            android:layout_toRightOf="@+id/choose_table_delete"
+                            android:layout_toEndOf="@+id/choose_table_delete"
+                            android:layout_marginTop="16sp"
+                            android:layout_marginLeft="20sp"
+                            android:layout_marginStart="20sp"/>
                     </RelativeLayout>
 
                     <ListView
