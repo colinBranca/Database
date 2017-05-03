@@ -1,7 +1,13 @@
 /*a) Print the brand group names with the highest number of Belgian indicia publishers */
-SELECT BG.NAME
-FROM BrandGroup BG, IndiciaPublisher IP, Publisher P, Country C
-WHERE
+Select BG.name
+From BrandGroup BG, ()
+  Select Count(distinct *)
+  From Publisher P, (
+    Select *
+    From IndiciaPublisher IP, Country C
+    Where IP.country_id = C.id and C.name = "Belgium")
+  Where ROWNUM = 1)
+Where BG.publisher_id = P.id
 
 /*b) Print the ids and names of publishers of Danish book series*/
 SELECT P.id, P.name
@@ -45,7 +51,7 @@ Where A.id = I.artist_id and S.id = I.story_id and A.id = C.artist_id and S.id =
 /*h) Print all non-reprinted stories involving Batman as a non-featured character */
 Select S
 From Characters C, Has_charaters HC (
-  Select S 
+  Select S
   From Story S, StoryReprint SR
   Where not exists (select * from  StoryReprint SR where SR.origin_id = S.id)
 )
