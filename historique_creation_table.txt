@@ -160,8 +160,7 @@ CREATE TABLE BrandGroup (
   notes VARCHAR2(1023),
   url VARCHAR(128),
   publisher_id INT NOT NULL,
-  PRIMARY KEY (id),
-  UNIQUE (name)
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE Publisher (
@@ -186,8 +185,7 @@ CREATE TABLE IndiciaPublisher (
   country_id INT,
   publisher_id INT,
   is_surrogate NUMBER(3) NOT NULL,
-  PRIMARY KEY (id),
-  UNIQUE (name)
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE Language (
