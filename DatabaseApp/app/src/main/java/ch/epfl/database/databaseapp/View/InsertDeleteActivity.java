@@ -18,7 +18,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.epfl.database.databaseapp.Model.DatabaseConnector;
 import ch.epfl.database.databaseapp.R;
 
 public class InsertDeleteActivity extends AppCompatActivity {
@@ -288,9 +287,9 @@ public class InsertDeleteActivity extends AppCompatActivity {
 
                 String query = "INSERT INTO " + spinnerInsertValue + "VALUES" + userEdition.toString();
 
-                DatabaseConnector db = new DatabaseConnector();
-                db.insertElement(query);
-                db.closeConnection();
+                //DatabaseConnector db = new DatabaseConnector();
+                //db.insertElement(query);
+                //db.closeConnection();
             }
         });
 
@@ -305,9 +304,9 @@ public class InsertDeleteActivity extends AppCompatActivity {
 
                 String query = "DELETE FROM " + spinnerDeleteValue + "WHERE" + userEdition.toString();
 
-                DatabaseConnector db = new DatabaseConnector();
-                db.insertElement(query);
-                db.closeConnection();
+                //DatabaseConnector db = new DatabaseConnector();
+                //db.insertElement(query);
+                //db.closeConnection();
             }
         });
 

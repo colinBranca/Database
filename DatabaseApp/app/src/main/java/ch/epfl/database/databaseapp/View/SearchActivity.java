@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import ch.epfl.database.databaseapp.Model.DatabaseConnector;
 import ch.epfl.database.databaseapp.R;
 
 public class SearchActivity extends AppCompatActivity {
@@ -45,8 +46,14 @@ public class SearchActivity extends AppCompatActivity {
 
         final ListView tablesList = (ListView) findViewById(R.id.tables_list);
         // Spinner Drop down elements
-        String[] tables = new String[]{"Table1", "Table2", "Table3", "Table4"};
-
+        final String[] tables = new String[]{"Artists", "Authors", "BrandGroup", "Characters",
+                "Color", "Country", "Creators", "Editing",
+                "Editor", "Genre", "Has_Characters", "Has_Genre",
+                "Has_Serie_Type", "Has_Story_Type", "Has_Type",
+                "IndiciaPublisher", "Inks", "Issue", "IssueReprint",
+                "Language", "Letters", "Pencils", "Publisher",
+                "Script", "Serie_Type", "Series", "Story",
+                "Story_Type"};
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, tables);
 
@@ -70,6 +77,7 @@ public class SearchActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String userQuery = searchText.getText().toString();
                 SparseBooleanArray positions = tablesList.getCheckedItemPositions();
+                DatabaseConnector connector = new DatabaseConnector();
                 //TODO
             }
         });
