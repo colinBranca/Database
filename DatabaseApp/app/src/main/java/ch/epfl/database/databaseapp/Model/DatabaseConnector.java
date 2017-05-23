@@ -24,7 +24,7 @@ public class DatabaseConnector {
         }
         String url = "jdbc:oracle:thin:@//diassrv2.epfl.ch:1521/orcldias.epfl.ch";
         String username = "DB2017_G15";
-        String password = "julcolyo";
+        String password = "julyocol";
         try {
             connection = DriverManager.getConnection(url, username, password);
             Log.d("STATUS", "CONNECTION REUSSIE!");
