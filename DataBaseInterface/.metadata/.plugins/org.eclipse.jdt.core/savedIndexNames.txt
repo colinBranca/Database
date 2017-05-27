@@ -1,0 +1,14 @@
+INDEX VERSION 1.129+/Users/yoanmartin/Desktop/Google Drive/EPFL/Bachelor VI/Introduction to Database Systems/Projet/Database/DataBaseInterface/.metadata/.plugins/org.eclipse.jdt.core
+2475542575.index
+936633021.index
+1411284869.index
+3390854298.index
+165524384.index
+4159910227.index
+768820603.index
+4149398318.index
+2333372803.index
+3336350947.index
+1782998293.index
+1147388792.index
+2618309990.index
