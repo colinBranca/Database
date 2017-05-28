@@ -1,0 +1,69 @@
+package view;
+
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.List;
+
+public class MainWindow {
+
+	protected Shell shell;
+	private Text searchText;
+
+	/**
+	 * Launch the application.
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		try {
+			MainWindow window = new MainWindow();
+			window.open();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Open the window.
+	 */
+	public void open() {
+		Display display = Display.getDefault();
+		createContents();
+		shell.open();
+		shell.layout();
+		while (!shell.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+	}
+
+	/**
+	 * Create contents of the window.
+	 */
+	protected void createContents() {
+		shell = new Shell();
+		shell.setSize(950, 433);
+		shell.setText("SWT Application");
+		
+		searchText = new Text(shell, SWT.BORDER);
+		searchText.setBounds(20, 20, 247, 39);
+		searchText.setText("Search...");
+		
+		Button btnSubmit = new Button(shell, SWT.NONE);
+		btnSubmit.setBounds(173, 74, 94, 28);
+		btnSubmit.setText("Submit");
+		
+		Button btnAdvancedOptions = new Button(shell, SWT.NONE);
+		btnAdvancedOptions.setBounds(139, 118, 128, 28);
+		btnAdvancedOptions.setText("Advanced Options");
+		
+		List list = new List(shell, SWT.BORDER);
+		list.setBounds(38, 155, 215, 246);
+		list.setItems(new String[]{"BLA","BLI", "BLO"});
+
+	}
+}

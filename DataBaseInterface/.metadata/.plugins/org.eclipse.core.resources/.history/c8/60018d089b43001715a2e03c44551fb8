@@ -1,0 +1,357 @@
+package view;
+
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+
+import java.util.ArrayList;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.List;
+
+public class MainWindow {
+
+	protected Shell shell;
+	private Text searchText;
+	private boolean tableIsVisible = false;
+	private Table table;
+	private Table tableInsert;
+
+	/**
+	 * Launch the application.
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		try {
+			MainWindow window = new MainWindow();
+			window.open();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Open the window.
+	 */
+	public void open() {
+		Display display = Display.getDefault();
+		createContents();
+		shell.open();
+		shell.layout();
+		while (!shell.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+	}
+
+	/**
+	 * Create contents of the window.
+	 */
+	protected void createContents() {
+		shell = new Shell();
+		shell.setSize(950, 433);
+		shell.setText("SWT Application");
+		
+		searchText = new Text(shell, SWT.BORDER);
+		searchText.setBounds(20, 20, 247, 39);
+		searchText.setText("Search...");
+		
+		Button btnSubmitSearch = new Button(shell, SWT.NONE);
+		btnSubmitSearch.setBounds(173, 74, 94, 28);
+		btnSubmitSearch.setText("Submit");
+		
+		Button btnAdvancedOptions = new Button(shell, SWT.NONE);
+		btnAdvancedOptions.setBounds(115, 118, 152, 28);
+		btnAdvancedOptions.setText("Advanced Options");
+		
+		table = new Table(shell, SWT.BORDER | SWT.CHECK | SWT.V_SCROLL | SWT.FULL_SELECTION);
+		table.setVisible(tableIsVisible);	    
+		table.setBounds(20, 152, 247, 249);
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+		table.setHeaderVisible(false);
+					
+		createTableItems();
+		
+		btnSubmitSearch.addSelectionListener(new SelectionListener(){
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				TableItem[] itemsSelected = table.getItems();
+				
+				ArrayList<String> selectedTable = new ArrayList<>();
+				for(int i = 0; i < itemsSelected.length; i++){
+					if(itemsSelected[i].getChecked()){
+						selectedTable.add(itemsSelected[i].getText());
+					}
+				}
+				
+				String search = searchText.getText();
+				
+				// TODO Launch Query
+			}
+			
+		});
+	
+		btnAdvancedOptions.addSelectionListener(new SelectionListener(){
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				tableIsVisible = !tableIsVisible;
+				table.setVisible(tableIsVisible);
+			}
+			
+		});
+		
+		Combo combo = new Combo(shell, SWT.NONE);
+		combo.setBounds(372, 19, 185, 67);
+		
+        String[] preselectedQueriesTable = new String[]{"Deliverable 2 : a", "Deliverable 2 : b", "Deliverable 2 : c", "Deliverable 2 : d",
+                "Deliverable 2 : e", "Deliverable 2 : f", "Deliverable 2 : g", "Deliverable 2 : h", "Deliverable 3 : a", "Deliverable 3 : b",
+                "Deliverable 3 : c", "Deliverable 3 : d", "Deliverable 3 : e", "Deliverable 3 : f", "Deliverable 3 : g", "Deliverable 3 : h",
+                "Deliverable 3 : i", "Deliverable 3 : j", "Deliverable 3 : k", "Deliverable 3 : l", "Deliverable 3 : m", "Deliverable 3 : n",
+                "Deliverable 3 : o", };
+        
+		combo.setItems(preselectedQueriesTable);
+		
+		Button btnSubmitPreselected = new Button(shell, SWT.NONE);
+		btnSubmitPreselected.setBounds(463, 74, 94, 28);
+		btnSubmitPreselected.setText("Submit");
+		
+		btnSubmitPreselected.addSelectionListener(new SelectionListener(){
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				int index = combo.getSelectionIndex();
+				String query = "";
+				
+				switch (index) {
+                case 0 :
+                    break;
+                case 1 :
+                    break;
+                case 2 :
+                    break;
+                case 3 :
+                    break;
+                case 4 :
+                    break;
+                case 5 :
+                    break;
+                case 6 :
+                    break;
+                case 7 :
+                    break;
+                case 8 :
+                    break;
+                case 9 :
+                    break;
+                case 10 :
+                    break;
+                case 11 :
+                    break;
+                case 12 :
+                    break;
+                case 13 :
+                    break;
+                case 14 :
+                    break;
+                case 15 :
+                    break;
+                case 16 :
+                    break;
+                case 17 :
+                    break;
+                case 18 :
+                    break;
+                case 19 :
+                    break;
+                case 20 :
+                    break;
+                case 21 :
+                    break;
+                case 22 :
+                    break;
+				}
+				
+			}
+			
+			// TODO : Execute query
+			
+		});
+		
+		Combo comboInsert = new Combo(shell, SWT.NONE);
+		comboInsert.setBounds(687, 20, 170, 55);
+		comboInsert.setText("Choose table: ");
+		
+	    String[] availableTables = new String[]{"Artists", "Authors", "BrandGroup", "Characters",
+	            "Color", "Country", "Creators", "Editing",
+	            "Editor", "Genre", "Has_Characters", "Has_Genre",
+	            "Has_Serie_Type", "Has_Story_Type", "Has_Type",
+	            "IndiciaPublisher", "Inks", "Issue", "IssueReprint",
+	            "Language", "Letters", "Pencils", "Publisher",
+	            "Script", "Serie_Type", "Series", "Story",
+	            "Story_Type"};
+	    
+	    comboInsert.setItems(availableTables);    
+	    
+	    tableInsert = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
+	    tableInsert.setBounds(687, 68, 206, 298);
+	    tableInsert.setHeaderVisible(true);
+	    tableInsert.setLinesVisible(true);
+	    comboInsert.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				int comboSelected = comboInsert.getSelectionIndex();
+				
+				String[] listAttributes = new String[]{};
+				
+				switch(comboSelected){
+				case 0:case 1:case 3:case 6:case 8:
+                case 9:case 24:case 27: listAttributes = new String[]{"ID", "Name"};
+                                break;
+
+                case 2: listAttributes = new String[]{"ID", "Name", "Publisher_id",
+                                                        "Year_began", "Year_ended",
+                                                        "Notes", "URL"};
+                        break;
+
+                case 4:case 21: listAttributes = new String[]{"Story_id", "Artist_id"};
+                        break;
+
+                case 5:case 19: listAttributes = new String[]{"ID", "Code", "Name"};
+                        break;
+
+                case 7: listAttributes = new String[]{"Story_id", "Editor_id"};
+                        break;
+
+                case 10: listAttributes = new String[]{"Story_id", "Character_id"};
+                        break;
+
+                case 11: listAttributes = new String[]{"Story_id", "Genre_id"};
+                        break;
+
+                case 12:case 14: listAttributes = new String[]{"Serie_id", "Type_id"};
+                        break;
+
+                case 13: listAttributes = new String[]{"Story_id", "Type_id"};
+                        break;
+
+                case 15: listAttributes = new String[]{"ID", "Name", "Year_began",
+                                                        "Year_ended", "Notes", "URL",
+                                                        "Country_id", "Publisher_id",
+                                                        "IS_Surrogate"};
+                        break;
+
+                case 16: listAttributes = new String[]{"Story_id", "Artist_id"};
+                        break;
+
+                case 17: listAttributes = new String[]{"ID", "Issue_Number", "Indicia_publisher_ID",
+                                                        "Publication_Date", "Price", "Page_Count",
+                                                        "Indicia_Frequency", "Editing", "Notes",
+                                                        "ISBN", "Valid_ISBN", "BarCode", "Title",
+                                                        "On_Sale_Date", "Rating"};
+                        break;
+
+                case 18: listAttributes = new String[]{"ID", "Origin_Issue_ID", "Target_Issue_ID"};
+                        break;
+
+                case 20: listAttributes = new String[]{"Story_id", "Creators_id"};
+                        break;
+
+                case 22: listAttributes = new String[]{"ID", "Name", "Year_began", "Year_ended",
+                                                        "Notes", "URL", "Country_ID"};
+                        break;
+
+                case 23: listAttributes = new String[]{"Story_id", "Author_id"};
+                        break;
+
+                case 25: listAttributes = new String[]{"ID", "Name", "Format", "Publication_Dates",
+                                                        "Year_began", "Year_ended", "First_Issue_ID",
+                                                        "Last_issue_ID", "Publisher_ID", "Country_ID",
+                                                        "Language_ID", "Notes", "Color", "Dimensions",
+                                                        "Paper_Stock", "Binding", "Publishing_Format"};
+                        break;
+
+                case 26: listAttributes = new String[]{"ID", "Title", "Issue_ID", "Feature",
+                                                        "Characters_ID", "Synopsis", "Reprint_Notes",
+                                                        "Notes"};
+                        break;
+
+                default :
+
+				}
+				
+				for(int i = 0; i < listAttributes.length; i++){
+					TableItem tabItem = new TableItem(tableInsert, SWT.NONE);
+					tabItem.setText(listAttributes[i]);
+				}
+			}
+		});
+		
+	}
+	
+	private void createTableItems(){
+	    TableItem artists = new TableItem(table, SWT.NONE);
+	    artists.setText("Artists");
+	    TableItem brandgroup = new TableItem(table, SWT.NONE);
+	    brandgroup.setText("BrandGroup");
+	    TableItem characters = new TableItem(table, SWT.NONE);
+	    characters.setText("Characters");
+	    TableItem country = new TableItem(table, SWT.NONE);
+	    country.setText("Country");
+	    TableItem genre = new TableItem(table, SWT.NONE);
+	    genre.setText("Genre");
+	    TableItem indiciapublisher = new TableItem(table, SWT.NONE);
+	    indiciapublisher.setText("IndiciaPublisher");
+	    TableItem issue = new TableItem(table, SWT.NONE);
+	    issue.setText("Issue");
+	    TableItem language = new TableItem(table, SWT.NONE);
+	    language.setText("Language");
+	    TableItem persons = new TableItem(table, SWT.NONE);
+	    persons.setText("Persons");
+	    TableItem publisher = new TableItem(table, SWT.NONE);
+	    publisher.setText("Publisher");
+	    TableItem series = new TableItem(table, SWT.NONE);
+	    series.setText("Series");
+	    TableItem story = new TableItem(table, SWT.NONE);
+	    story.setText("Story");
+	    TableItem storyType = new TableItem(table, SWT.NONE);
+	    storyType.setText("StoryType");
+	}
+}
