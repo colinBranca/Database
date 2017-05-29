@@ -4,9 +4,11 @@
 <fullyQualifiedTypeName name="org.eclipse.swt.widgets.Listener"/>
 <fullyQualifiedTypeName name="org.eclipse.swt.widgets.TableItem"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
-<fullyQualifiedTypeName name="org.eclipse.swt.events.SelectionListener"/>
 <fullyQualifiedTypeName name="org.eclipse.swt.custom.TableEditor"/>
 <fullyQualifiedTypeName name="org.eclipse.swt.widgets.MessageBox"/>
 <fullyQualifiedTypeName name="javax.swing.JTable"/>
 <fullyQualifiedTypeName name="model.DatabaseConnector"/>
+<fullyQualifiedTypeName name="javax.swing.JFrame"/>
+<fullyQualifiedTypeName name="javax.swing.JOptionPane"/>
+<fullyQualifiedTypeName name="org.eclipse.swt.events.SelectionListener"/>
 </qualifiedTypeNameHistroy>

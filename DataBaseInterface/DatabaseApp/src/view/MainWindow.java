@@ -1,7 +1,6 @@
 package view;
 
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import java.util.ArrayList;
@@ -23,8 +22,15 @@ public class MainWindow {
 	protected Shell shell;
 	private Text searchText;
 	private boolean tableIsVisible = false;
+	private boolean doubleID = false;
+	private boolean isTextTabSet = false;
+	private boolean isDeletionSet = false;
 	private Table table;
-	private Table tableInsert;
+	private Text textResult;
+	private Text firstIDToDelete;
+	private Text secondIDToDelete;
+	private int attributesNumber = 0;
+	private Text[] textTab = new Text[2];
 	
 	/**
 	 * Launch the application.
@@ -59,16 +65,21 @@ public class MainWindow {
 	 */
 	protected void createContents() {
 		shell = new Shell();
-		shell.setSize(950, 433);
+		shell.setSize(1035, 700);
 		shell.setText("SWT Application");
+		
+	    textResult = new Text(shell, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+	    textResult.setBounds(20, 156, 1005, 227);
+	    textResult.setEditable(false);
+	    textResult.setVisible(false);
 		
 		searchText = new Text(shell, SWT.BORDER);
 		searchText.setBounds(20, 20, 247, 39);
-		searchText.setText("Search...");
+		searchText.setMessage("Search...");
 		
 		Button btnSubmitSearch = new Button(shell, SWT.NONE);
-		btnSubmitSearch.setBounds(173, 74, 94, 28);
-		btnSubmitSearch.setText("Submit");
+		btnSubmitSearch.setBounds(140, 74, 127, 28);
+		btnSubmitSearch.setText("Submit Search");
 		
 		Button btnAdvancedOptions = new Button(shell, SWT.NONE);
 		btnAdvancedOptions.setBounds(115, 118, 152, 28);
@@ -94,7 +105,6 @@ public class MainWindow {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				TableItem[] itemsSelected = table.getItems();
-				
 				ArrayList<String> selectedTable = new ArrayList<>();
 				for(int i = 0; i < itemsSelected.length; i++){
 					if(itemsSelected[i].getChecked()){
@@ -107,11 +117,32 @@ public class MainWindow {
 				
 				DatabaseConnector dbConnector = new DatabaseConnector();
 				
-				for(String table : selectedTable){
-					result = result + System.lineSeparator() + dbConnector.searchElement(table, search);
+				if(selectedTable.isEmpty()){
+					selectedTable.add("ARTISTS");
+					selectedTable.add("BRANDGROUP");
+					selectedTable.add("CHARACTERS");
+					selectedTable.add("COUNTRY");
+					selectedTable.add("GENRE");
+					selectedTable.add("INDICIAPUBLISHER");
+					selectedTable.add("ISSUE");
+					selectedTable.add("LANGUAGE");
+					selectedTable.add("PERSONS");
+					selectedTable.add("PUBLISHER");
+					selectedTable.add("SERIES");
+					selectedTable.add("STORY");
+					selectedTable.add("STORY_TYPE");
 				}
 				
-				displayDialogResult(result);
+				for(String table : selectedTable){
+					String tmpResult = dbConnector.searchElement(table, search);
+					if(tmpResult != ""){
+						result = result + System.lineSeparator() + "Found in table: "+ table + System.lineSeparator() + tmpResult;
+					}
+				}
+				
+				displayResult(result);
+				
+				dbConnector.closeConnection();
 			}
 			
 		});
@@ -126,6 +157,7 @@ public class MainWindow {
 
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+				textResult.setVisible(false);
 				tableIsVisible = !tableIsVisible;
 				table.setVisible(tableIsVisible);
 			}
@@ -144,8 +176,8 @@ public class MainWindow {
 		combo.setItems(preselectedQueriesTable);
 		
 		Button btnSubmitPreselected = new Button(shell, SWT.NONE);
-		btnSubmitPreselected.setBounds(463, 74, 94, 28);
-		btnSubmitPreselected.setText("Submit");
+		btnSubmitPreselected.setBounds(430, 47, 127, 28);
+		btnSubmitPreselected.setText("Submit Query");
 		
 		btnSubmitPreselected.addSelectionListener(new SelectionListener(){
 
@@ -213,31 +245,27 @@ public class MainWindow {
 				
 				String result = dbConnector.executeQuery(query);
 				
-				displayDialogResult(result);					
+				displayResult(result);	
+				
+				dbConnector.closeConnection();
 			}
 								
 		});
-		
-	    tableInsert = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
-	    tableInsert.setBounds(687, 68, 206, 54);
-	    tableInsert.setHeaderVisible(false);
-	    tableInsert.setLinesVisible(true);
-	    
-	
+			
 		Combo comboInsert = new Combo(shell, SWT.NONE);
-		comboInsert.setBounds(687, 20, 170, 55);
+		comboInsert.setBounds(617, 19, 170, 40);
 		comboInsert.setText("Choose table: ");
 		
 	    String[] availableTables = new String[]{"Artists", "Authors", "BrandGroup", "Characters",
-	            "Color", "Country", "Creators", "Editing",
-	            "Editor", "Genre", "Has_Characters", "Has_Genre",
-	            "Has_Serie_Type", "Has_Story_Type", "Has_Type",
+	            "Colors", "Country", "Editors", "Feature",
+	            "Genre", "Has_Characters", "Has_Genre",
+	            "Has_Story_Type", "Has_Type",
 	            "IndiciaPublisher", "Inks", "Issue", "IssueReprint",
-	            "Language", "Letters", "Pencils", "Publisher",
-	            "Script", "Serie_Type", "Series", "Story",
-	            "Story_Type"};
+	            "Language", "Letters", "Main", "Pencils", "Persons", "Publisher",
+	            "Series", "Story", "Story_Type", "StoryReprint"};
 	    
 	    comboInsert.setItems(availableTables);
+	    
 	    comboInsert.addSelectionListener(new SelectionListener() {
 			
 			@Override
@@ -248,92 +276,255 @@ public class MainWindow {
 			
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
-				int comboSelected = comboInsert.getSelectionIndex();
+				textResult.setVisible(false);
+				String comboSelected = comboInsert.getText().toUpperCase();
+				if(isTextTabSet){
+					for(int i = 0; i < textTab.length; i++){
+						textTab[i].setVisible(false);
+					}
+				}
 				
 				String[] listAttributes = new String[]{};
 				
 				switch(comboSelected){
-				case 0:case 1:case 3:case 6:case 8:
-                case 9:case 24:case 27: listAttributes = new String[]{"ID", "Name"};
-                                break;
-
-                case 2: listAttributes = new String[]{"ID", "Name", "Publisher_id",
-                                                        "Year_began", "Year_ended",
-                                                        "Notes", "URL"};
-                        break;
-
-                case 4:case 21: listAttributes = new String[]{"Story_id", "Artist_id"};
-                        break;
-
-                case 5:case 19: listAttributes = new String[]{"ID", "Code", "Name"};
-                        break;
-
-                case 7: listAttributes = new String[]{"Story_id", "Editor_id"};
-                        break;
-
-                case 10: listAttributes = new String[]{"Story_id", "Character_id"};
-                        break;
-
-                case 11: listAttributes = new String[]{"Story_id", "Genre_id"};
-                        break;
-
-                case 12:case 14: listAttributes = new String[]{"Serie_id", "Type_id"};
-                        break;
-
-                case 13: listAttributes = new String[]{"Story_id", "Type_id"};
-                        break;
-
-                case 15: listAttributes = new String[]{"ID", "Name", "Year_began",
-                                                        "Year_ended", "Notes", "URL",
-                                                        "Country_id", "Publisher_id",
-                                                        "IS_Surrogate"};
-                        break;
-
-                case 16: listAttributes = new String[]{"Story_id", "Artist_id"};
-                        break;
-
-                case 17: listAttributes = new String[]{"ID", "Issue_Number", "Indicia_publisher_ID",
-                                                        "Publication_Date", "Price", "Page_Count",
-                                                        "Indicia_Frequency", "Editing", "Notes",
-                                                        "ISBN", "Valid_ISBN", "BarCode", "Title",
-                                                        "On_Sale_Date", "Rating"};
-                        break;
-
-                case 18: listAttributes = new String[]{"ID", "Origin_Issue_ID", "Target_Issue_ID"};
-                        break;
-
-                case 20: listAttributes = new String[]{"Story_id", "Creators_id"};
-                        break;
-
-                case 22: listAttributes = new String[]{"ID", "Name", "Year_began", "Year_ended",
-                                                        "Notes", "URL", "Country_ID"};
-                        break;
-
-                case 23: listAttributes = new String[]{"Story_id", "Author_id"};
-                        break;
-
-                case 25: listAttributes = new String[]{"ID", "Name", "Format", "Publication_Dates",
-                                                        "Year_began", "Year_ended", "First_Issue_ID",
-                                                        "Last_issue_ID", "Publisher_ID", "Country_ID",
-                                                        "Language_ID", "Notes", "Color", "Dimensions",
-                                                        "Paper_Stock", "Binding", "Publishing_Format"};
-                        break;
-
-                case 26: listAttributes = new String[]{"ID", "Title", "Issue_ID", "Feature",
-                                                        "Characters_ID", "Synopsis", "Reprint_Notes",
-                                                        "Notes"};
-                        break;
-
-                default :
+				case "ARTISTS" :
+					listAttributes = new String[]{"ID", "NAME"};
+					break;
+					
+				case "AUTHORS" :
+					listAttributes = new String[]{"STORY_ID", "PERSONS_ID"};
+					break;
+					
+				case "BRANDGROUP" :
+					listAttributes = new String[]{"ID", "NAME", "PUBLISHER_ID", "YEAR_BEGAN", "YEAR_ENDED", "NOTES", "URL"};
+					break;
+					
+				case "CHARACTERS" : 
+					listAttributes = new String[]{"ID", "NAME"};
+					break;
+					
+				case "COLORS" :
+					listAttributes = new String[]{"STORY_ID", "PERSON_ID"};
+					break;
+					
+				case "COUNTRY" :
+					listAttributes = new String[]{"ID", "CODE", "NAME"};
+					break;
+					
+				case "EDITORS" :
+					listAttributes = new String[]{"STORY_ID", "PERSON_ID"};
+					break;
+					
+				case "FEATURE" :
+					listAttributes = new String[]{"STORY_ID", "CHARACTER_ID"};
+					break;
+					
+				case "GENRE" :
+					listAttributes = new String[]{"ID", "NAME"};
+					break;
+					
+				case "HAS_CHARACTERS" :
+					listAttributes = new String[]{"STORY_ID", "CHARACTER_ID"};
+					break;
+					
+				case "HAS_GENRE" :
+					listAttributes = new String[]{"STORY_ID", "GENRE_ID"};
+					break;
+					
+				case "HAS_STORY_TYPE" :
+					listAttributes = new String[]{"STORY_ID", "TYPE_ID"};
+					break;
+					
+				case "HAS_TYPE" :
+					listAttributes = new String[]{"STORY_ID", "TYPE_ID"};
+					break;
+					
+				case "INDICIAPUBLISHER" :
+					listAttributes = new String[]{"ID", "NAME", "YEAR_BEGAN", "YEAR_ENDED", "NOTES", "URL", "COUNTRY_ID", "PUBLISHER_ID", "IS_SURROGATE"};
+					break;
+					
+				case "INKS" :
+					listAttributes = new String[]{"STORY_ID", "PERSON_ID"};
+					break;
+					
+				case "ISSUE" :
+					listAttributes = new String[]{"ID", "ISSUE_NUMBER", "INDICIA_PUBLISHER_ID", "PUBLICATION_DATE", "PRICE", "PAGE_COUNT", "INDICIA_FREQUENCY", "EDITING", "NOTES", "ISBN", "VALID_ISBN", "BARCODE", "TITLE", "ON_SALE_DATE", "RATING", "SERIES_ID"};
+					break;
+					
+				case "ISSUEREPRINT" :
+					listAttributes = new String[]{"ID", "ORIGIN_ISSUE_ID", "TARGET_ISSUE_ID"};
+					break;
+					
+				case "LANGUAGE" :
+					listAttributes = new String[]{"ID", "CODE", "NAME"};
+					break;
+					
+				case "LETTERS" :
+					listAttributes = new String[]{"STORY_ID", "PERSON_ID"};
+					break;
+					
+				case "MAIN" :
+					listAttributes = new String[]{"STORY_ID", "CHARACTER_ID"};
+					break;
+					
+				case "PENCILS" :
+					listAttributes = new String[]{"STORY_ID", "ARTIST_ID"};
+					break;
+					
+				case "PERSONS" :
+					listAttributes = new String[]{"ID", "NAME"};
+					break;
+					
+				case "PUBLISHER" :
+					listAttributes = new String[]{"ID", "NAME", "YEAR_BEGAN", "YEAR_ENDED", "NOTES", "URL", "COUNTRY_ID"};
+					break;
+					
+				case "SERIES" :
+					listAttributes = new String[]{"ID", "NAME", "FORMAT", "PUBLICATION_DATES", "YEAR_BEGAN", "YEAR_ENDED", "FIRST_ISSUE_ID", "LAST_ISSUE_ID", "PUBLISHER_ID", "COUNTRY_ID", "LANGUAGE_ID", "NOTES", "COLOR", "DIMENSIONS", "PAPER_STOCK", "BINDING", "PUBLISHING_FORMAT", "PUBLICATION_TYPE"};
+					break;
+					
+				case "STORY" :
+					listAttributes = new String[]{"ID", "TITLE", "ISSUE_ID", "SYNPOSIS", "REPRINT_NOTES", "NOTES", "TYPE_ID"};
+					break;
+					
+				case "STORY_TYPE" :
+					listAttributes = new String[]{"ID", "NAME"};
+					break;
+					
+				case "STORYREPRINT" :
+					listAttributes = new String[]{"ID", "ORIGIN_ID", "TARGET_ID"};
+					break;
+					
+				default : 
+					System.out.println("WRONG TABLE INPUT");
 
 				}
-								
-				for(int i = 0; i < listAttributes.length; i++){
-					TableItem tabItem = new TableItem(tableInsert, SWT.NONE);
-					tabItem.setText(listAttributes[i]);
+				
+				attributesNumber = listAttributes.length;
+				
+				textTab = new Text[attributesNumber];
+				
+				for(int i = 0; i < attributesNumber; i++){
+				    textTab[i] = new Text(shell, SWT.BORDER);
+				    textTab[i].setBounds(621, 30*i + 100, 175, 19);
+				    textTab[i].setMessage(listAttributes[i]);
+				}
+				isTextTabSet = true;
+			}
+		});
+	    
+	    Button btnSubmitInsert = new Button(shell, SWT.NONE);
+	    btnSubmitInsert.setBounds(648, 47, 139, 28);
+	    btnSubmitInsert.setText("Submit Insertion");
+	    
+	    btnSubmitInsert.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				String table = comboInsert.getText().toUpperCase();
+				String[] values = new String[attributesNumber];
+				for(int i = 0; i < values.length; i++){
+					values[i] = textTab[i].getText();
 				}
 				
+				DatabaseConnector dbConnector = new DatabaseConnector();
+				String result = dbConnector.insertElement(table, values);
 				
+				displayResult(result);
+				
+				dbConnector.closeConnection();
+				
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	    
+	    Combo comboDelete = new Combo(shell, SWT.NONE);
+	    comboDelete.setBounds(829, 19, 185, 40);
+	    comboDelete.setText("Choose table: ");
+	    comboDelete.setItems(availableTables);
+	    
+	    firstIDToDelete = new Text(shell, SWT.BORDER);
+	    firstIDToDelete.setBounds(829, 92, 185, 19);
+	    firstIDToDelete.setVisible(false);
+	    
+	    secondIDToDelete = new Text(shell, SWT.BORDER);
+	    secondIDToDelete.setBounds(829, 131, 185, 19);
+	    secondIDToDelete.setVisible(false);
+	    
+	    Button btnSubmitDelete = new Button(shell, SWT.NONE);
+	    btnSubmitDelete.setBounds(862, 47, 152, 28);
+	    btnSubmitDelete.setText("Submit Deletion");
+	   
+	    btnSubmitDelete.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				String table = comboDelete.getText().toUpperCase();
+				String firstID = "";
+				String result = "";
+				
+				DatabaseConnector dbConnector = new DatabaseConnector();
+
+				if(doubleID){
+					firstID = firstIDToDelete.getText();
+					String secondID = secondIDToDelete.getText();					
+					String[] ids = new String[]{firstID, secondID};
+					
+					result = dbConnector.deleteElement(table, ids);
+				} else {
+					firstID = firstIDToDelete.getText();
+					
+					result = dbConnector.deleteElement(table, firstID);
+				}
+				
+				displayResult(result);
+				dbConnector.closeConnection();
+				
+			}
+		});
+	    
+	    comboDelete.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				textResult.setVisible(false);
+				if(isDeletionSet){
+					firstIDToDelete.setVisible(false);
+					secondIDToDelete.setVisible(false);
+				}
+				String selectedTable = comboDelete.getText().toUpperCase();
+				
+				if(selectedTable.equals("ARTISTS") || selectedTable.equals("BRANDGROUP") || selectedTable.equals("CHARACTERS") || 
+						selectedTable.equals("COUNTRY") || selectedTable.equals("GENRE") || selectedTable.equals("INDICIAPUBLISHER") ||
+						selectedTable.equals("ISSUE") || selectedTable.equals("ISSUEREPRINT") || selectedTable.equals("LANGUAGE") ||
+						selectedTable.equals("PERSONS") || selectedTable.equals("PUBLISHER") || selectedTable.equals("SERIES") ||
+						selectedTable.equals("STORY") || selectedTable.equals("STORYREPRINT") || selectedTable.equals("STORY_TYPE")){
+                    
+					firstIDToDelete.setVisible(true);
+				} else {
+					doubleID = true;
+					firstIDToDelete.setVisible(true);
+					secondIDToDelete.setVisible(true);
+				}
+				isDeletionSet = true;
 			}
 		});
 		
@@ -365,13 +556,16 @@ public class MainWindow {
 	    TableItem story = new TableItem(table, SWT.NONE);
 	    story.setText("Story");
 	    TableItem storyType = new TableItem(table, SWT.NONE);
-	    storyType.setText("StoryType");
+	    storyType.setText("Story_Type");
 	}
 	
-	private void displayDialogResult(String result){
-		MessageBox dialog = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK| SWT.CANCEL);
-			dialog.setText("Query Result");
-			dialog.setMessage(result);
-			dialog.open();
+	private void displayResult(String result){
+		for(int i = 0; i < attributesNumber; i++){
+			textTab[i].setVisible(false);
+		}
+		tableIsVisible = !tableIsVisible;
+		table.setVisible(false);
+		textResult.setVisible(true);
+		textResult.setText(result);
 	}
 }
