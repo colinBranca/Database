@@ -1,0 +1,332 @@
+package model;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class DatabaseConnector {
+
+    Connection connection;
+
+    public DatabaseConnector(){
+        try {
+        	Class.forName("oracle.jdbc.driver.OracleDriver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        String url = "jdbc:oracle:thin:@//diassrv2.epfl.ch:1521/orcldias.epfl.ch";
+        String username = "DB2017_G15";
+        String password = "julyocol";
+        try {
+            connection = DriverManager.getConnection(url, username, password);
+            System.out.println("CONNECTION ESTABLISHED!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String searchElement(String table, String elem){
+    	String query = "";
+    	int elemAsNumber = 0;
+    	if(isInteger(elem)){
+    		elemAsNumber = Integer.parseInt(elem);
+    	}
+    	table = table.toUpperCase();
+    	switch (table) {
+    	case "ARTISTS" :
+    		query = "Select * From ARTISTS Where ARTISTS.name = " + "'"+elem+"'";
+    		break;
+    		
+    	case "BRANDGROUP" :
+    		query = "Select * From BRANDGROUP Where BRANDGROUP.name = " + "'"+elem+"'" +
+    				" OR BRANDGROUP.url = " + "'"+elem+"'";
+    		break;
+    		
+    	case "CHARACTERS" :
+    		query = "Select * From CHARACTERS Where CHARACTERS.name = " + "'"+elem+"'";
+    		break;
+    		
+    	case "COUNTRY":
+    			query = "Select * From COUNTRY Where COUNTRY.name = " + "'"+elem+"'" + 
+    					" OR COUNTRY.code = " + "'"+elem+"'";
+    		break; 
+    		
+    	case "GENRE":
+    		query = "Select * From GENRE Where GENRE.name = " + "'"+elem+"'";
+    		break;
+    	
+    	case "INDICIAPUBLISHER":
+    		query = "Select * From INDICIAPUBLISHER Where INDICIAPUBLISHER.name = " + 
+    				"'"+elem+"'"+ " OR INDICIAPUBLISHER.url = " + "'"+elem+"'";
+    		break;
+    	
+    	case "ISSUE":
+    		if(isInteger(elem)){
+    			query = "Select * From ISSUE Where ISSUE.ISSUE_NUMBER = " + elemAsNumber + 
+    					" OR ISSUE.PUBLICATION_DATE = " + elemAsNumber + 
+    					" OR ISSUE.PRICE = " + elemAsNumber + 
+    					" OR ISSUE.PAGE_COUNT = " + elemAsNumber + 
+    					" OR ISSUE.ISBN = " + elemAsNumber +
+    					" OR ISSUE.BARCODE = " + elemAsNumber;
+    		}
+    		query = "Select * From ISSUE Where ISSUE.EDITING = " + "'"+elem+"'" +
+    				" OR ISSUE.TITLE = " + "'"+elem+"'" +
+    				" OR ISSUE.ON_SALE_DATE = " + "'"+elem+"'" + 
+    				" OR ISSUE.RATING = " + "'"+elem+"'";
+    		break;
+    	
+    	case "LANGUAGE":
+   			query = "Select * From LANGUAGE Where LANGUAGE.name = " + "'"+elem+"'" + 
+   					"OR LANGUAGE.CODE = "+ "'"+elem+"'";
+    		
+    		break;
+    	
+    	case "PERSONS":
+    		query = "Select * From PERSONS Where PERSONS.name = " + "'"+elem+"'";
+    		break;
+    		
+    	case "PUBLISHER":
+    		if(isInteger(elem)){
+    			query = "Select * From PUBLISHER Where PUBLISHER.YEAR_BEGAN = " + elemAsNumber +
+    					" OR PUBLISHER.YEAR_ENDED = " + elemAsNumber;
+    		} else {
+    			query = "Select * From PUBLISHER Where PUBLISHER.name = " + "'"+elem+"'" + 
+    					" OR PUBLISHER.URL = " + "'"+elem+"'";
+    		}
+    		break;
+    		
+    	case "SERIES":
+    		if(isInteger(elem)){
+    			query = "Select * From SERIES Where SERIES.YEAR_BEGAN = " + elemAsNumber + 
+        				" OR SERIES.YEAR_ENDED = " + elemAsNumber;
+    		} else {
+    			query = "Select * From SERIES Where SERIES.name = " + "'"+elem+"'" + 
+    					" OR SERIES.format = " + "'"+elem+"'" + 
+    					" OR SERIES.PUBLICATION_DATES = " + "'"+elem+"'" + 
+    					" OR SERIES.DIMENSIONS = " + "'"+elem+"'";
+    		}
+    		break;
+    	
+    	case "STORY":
+    		query = "Select * From STORY Where STORY.TITLE = " + "'"+elem+"'";
+    		break;
+    		
+    	case "STORY_TYPE":
+    		query = "Select * From STORY_TYPE Where STORY_TYPE.NAME = " + "'"+elem+"'";
+    		break;
+    	
+    	default : System.out.println("BAD QUERY ERROR");
+    		break;
+    	}
+
+        return executeQuery(query);
+    }
+
+    public String insertElement(String table, String...values){ 
+    	checkTableInsertDelete(table);
+    	
+        String query = "Insert into " + table + " Values (";
+        for(int i = 0; i < values.length; i++){
+        	if(i == values.length - 1){
+        		query = query.concat("'" + values[i] + "'");
+        	} else {
+        		query = query.concat("'" + values[i] + "', ");
+        	}
+        }
+        
+        query = query.concat(")");
+        
+        return executeQuery(query);
+    }
+
+    public String deleteElement(String table, String... values){
+    	checkTableInsertDelete(table);
+    	table = table.toUpperCase();
+    	String elem = values[0];
+    	String elem1 = values[1];
+    	String query = "";
+    	switch(table){
+    	case "ARTISTS":
+            query = "Delete From ARTISTS Where ARTISTS.ID = "+elem;
+    		break;
+    		
+    	case "AUTHORS":
+            query = "Delete From AUTHORS Where AUTHORS.STORY_ID = "+elem+" AND AUTHORS.PERSONS_ID = "+elem1;
+    		break;
+
+    	case "BRANDGROUP":
+            query = "Delete From BRANDGROUP Where BRANDGROUP.ID = "+elem;
+    		break;
+    		
+    	case "CHARACTERS":
+            query = "Delete From CHARACTERS Where CHARACTERS.ID = "+elem;
+    		break;
+    		
+    	case "COLORS":
+            query = "Delete From COLORS Where COLORS.STORY_ID = "+elem+" AND COLORS.PERSON_ID = "+elem1;
+    		break;
+    		
+    	case "COUNTRY":
+            query = "Delete From COUNTRY Where COUNTRY.ID = "+elem;
+    		break;
+    		
+    	case "EDITORS":
+            query = "Delete From EDITORS Where EDITORS.STORY_ID = "+elem+" AND EDITORS.PERSON_ID = "+elem1;
+    		break;
+    		
+    	case "FEATURE":
+            query = "Delete From FEATURE Where FEATURE.STORY_ID = "+elem+" AND FEATURES.CHARACTER_ID = "+elem1;
+    		break;
+    		
+    	case "GENRE":
+            query = "Delete From GENRE Where GENRE.ID = "+elem;
+    		break;
+    		
+    	case "HAS_CHARACTERS":
+            query = "Delete From HAS_CHARACTERS Where HAS_CHARACTERS.STORY_ID = "+elem+" AND HAS_CHARACTERS.CHARACTER_ID = "+elem1;
+    		break;
+    		
+    	case "HAS_GENRE":
+            query = "Delete From HAS_GENRE Where HAS_GENRE.STORY_ID = "+elem+" AND HAS_GENRE.GENRE_ID = "+elem1;
+    		break;
+    		
+    	case "HAS_STORY_TYPE":
+            query = "Delete From HAS_STORY_TYPE Where HAS_STORY_TYPE.STORY_ID = "+elem+" AND HAS_STORY_TYPE.TYPE_ID = "+elem1;
+    		break;
+    		
+    	case "HAS_TYPE":
+            query = "Delete From HAS_TYPE Where HAS_TYPE.STORY_ID = "+elem+" AND HAS_TYPE.TYPE_ID = "+elem1;
+    		break;
+    		
+    	case "INDICIAPUBLISHER":
+            query = "Delete From INDICIAPUBLISHER Where INDICIAPUBLISHER.ID = "+elem;
+    		break;
+    		
+    	case "INKS":
+            query = "Delete From INKS Where INKS.STORY_ID = "+elem+" AND INKS.PERSON_ID = "+elem1;
+    		break;
+    		
+    	case "ISSUE":
+            query = "Delete From ISSUE Where ISSUE.ID = "+elem;
+    		break;
+    		
+    	case "ISSUEREPRINT":
+            query = "Delete From ISSUEREPRINT Where ISSUEREPRINT.ID = "+elem;
+    		break;
+    		
+    	case "LANGUAGE":
+            query = "Delete From LANGUAGE Where LANGUAGE.ID = "+elem;
+    		break;
+    		
+    	case "LETTERS":
+            query = "Delete From LETTERS Where LETTERS.STORY_ID = "+elem+" AND LETTERS.PERSON_ID = "+elem1;
+    		break;
+    		
+    	case "MAIN":
+            query = "Delete From MAIN Where MAIN.STORY_ID = "+elem+" AND MAIN.CHARACTER_ID = "+elem1;
+    		break;
+    		
+    	case "PENCILS":
+            query = "Delete From PENCILS Where PENCILS.STORY_ID = "+elem+" AND PENCILS.ARTIST_ID = "+elem1;
+    		break;
+    		
+    	case "PERSONS":
+            query = "Delete From PERSONS Where PERSONS.ID = "+elem;
+    		break;
+    		
+    	case "PUBLISHER":
+            query = "Delete From PUBLISHER Where PUBLISHER.ID = "+elem;
+    		break;
+    		
+    	case "SERIES":
+            query = "Delete From SERIES Where SERIES.ID = "+elem;
+    		break;
+    		
+    	case "STORY":
+            query = "Delete From STORY Where STORY.ID = "+elem;
+    		break;
+    		
+    	case "STORY_TYPE":
+            query = "Delete From STORY_TYPE Where STORY_TYPE.ID = "+elem;
+    		break;
+    		
+    	case "STORYREPRINT":
+            query = "Delete From STORYREPRINT Where STORYREPRINT.ID = "+elem;
+    		break;
+    		
+    	default : 
+    		System.out.println("BAD QUERY TABLE");
+    	}
+    	       
+        return executeQuery(query);
+    }
+
+    public void closeConnection(){
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public String executeQuery(String query){
+    	String resultText = ""; 
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet result = stmt.executeQuery(query);
+            ResultSetMetaData rsmd = result.getMetaData();
+            int columnsNumber = rsmd.getColumnCount();
+             
+            while (result.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i > 1) {
+                    	resultText = resultText.concat(", ");
+                    	System.out.print(",  ");
+                    	}
+                    String columnValue = result.getString(i);
+                    resultText = resultText + " "+ columnValue + " " + rsmd.getColumnName(i);
+                    System.out.print(columnValue + " " + rsmd.getColumnName(i));
+                }
+                resultText = resultText + System.lineSeparator();
+                System.out.println("");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return resultText;
+    }
+    
+    private void checkTableInsertDelete(String table){
+    	table = table.toUpperCase();
+    	if(!(table == "ARTISTS" || table == "AUTHORS" || table == "BRANDGROUP"
+    			|| table == "CHARACTERS" || table == "COLORS" || table == "COUNTRY"
+    			|| table == "EDITORS" || table == "EDITORS" || table == "GENRE"
+    			|| table == "HAS_CHARACTERS" || table == "HAS_GENRE"
+    			|| table == "HAS_STORY_TYPE" || table == "HAS_TYPE"
+    			|| table == "INDICIAPUBLISHER" || table == "INKS" || table == "ISSUE"
+    			|| table == "ISSUEREPRINT" || table == "LANGUAGE" || table == "LETTERS"
+    			|| table == "MAIN" || table == "PENCILS" || table == "PERSONS"
+    			|| table == "PUBLISHER" || table == "SERIES" || table == "STORY"
+    			|| table == "STORY_TYPE" || table == "STORYREPRINT")){
+    		System.out.print("WRONG TABLE INPUT");
+    	}
+    }
+    
+    public static boolean isInteger(String s) {
+        boolean isValidInteger = false;
+        try{
+           Integer.parseInt(s);
+           // s is a valid integer
+           isValidInteger = true;
+        }
+        catch (NumberFormatException ex){
+           // s is not an integer
+        }
+   
+        return isValidInteger;
+     }
+}

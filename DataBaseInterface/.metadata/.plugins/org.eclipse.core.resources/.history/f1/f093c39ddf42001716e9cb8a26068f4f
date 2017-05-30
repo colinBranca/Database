@@ -1,0 +1,8 @@
+package Model;
+
+public class Main {
+	public static void main(String args[]){
+		DatabaseConnector dbConnector = new DatabaseConnector();
+		dbConnector.insertElement("Country", new String[]{"256", "rds", "Royaume de Stan"});
+	}
+}

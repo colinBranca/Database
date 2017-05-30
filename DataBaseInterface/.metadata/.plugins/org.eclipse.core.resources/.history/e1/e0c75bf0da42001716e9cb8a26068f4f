@@ -1,0 +1,9 @@
+package Model;
+
+public class Main {
+	public static void main(String args[]){
+		String[] tables = {"Country"};
+		DatabaseConnector dbConnector = new DatabaseConnector();
+		dbConnector.searchElement("*", tables);
+	}
+}
