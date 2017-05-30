@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "/home/colin/Documents/EPFL/3e année/Database/Projet/Database/DatabaseApp/app/build/intermediates/res/merged/debug/layout-v11/notification_template_big_media_narrow_custom.xml",
+        "source": "/home/colin/.android/build-cache/0c3a88bfa00b76e6b5c7ff3174fb1a64d8885857/output/res/layout-v11/notification_template_big_media_narrow_custom.xml"
+    },
+    {
+        "merged": "/home/colin/Documents/EPFL/3e année/Database/Projet/Database/DatabaseApp/app/build/intermediates/res/merged/debug/layout-v11/notification_template_big_media_custom.xml",
+        "source": "/home/colin/.android/build-cache/0c3a88bfa00b76e6b5c7ff3174fb1a64d8885857/output/res/layout-v11/notification_template_big_media_custom.xml"
+    },
+    {
+        "merged": "/home/colin/Documents/EPFL/3e année/Database/Projet/Database/DatabaseApp/app/build/intermediates/res/merged/debug/layout-v11/notification_media_action.xml",
+        "source": "/home/colin/.android/build-cache/0c3a88bfa00b76e6b5c7ff3174fb1a64d8885857/output/res/layout-v11/notification_media_action.xml"
+    },
+    {
+        "merged": "/home/colin/Documents/EPFL/3e année/Database/Projet/Database/DatabaseApp/app/build/intermediates/res/merged/debug/layout-v11/notification_template_big_media_narrow.xml",
+        "source": "/home/colin/.android/build-cache/0c3a88bfa00b76e6b5c7ff3174fb1a64d8885857/output/res/layout-v11/notification_template_big_media_narrow.xml"
+    },
+    {
+        "merged": "/home/colin/Documents/EPFL/3e année/Database/Projet/Database/DatabaseApp/app/build/intermediates/res/merged/debug/layout-v11/notification_template_big_media.xml",
+        "source": "/home/colin/.android/build-cache/0c3a88bfa00b76e6b5c7ff3174fb1a64d8885857/output/res/layout-v11/notification_template_big_media.xml"
+    },
+    {
+        "merged": "/home/colin/Documents/EPFL/3e année/Database/Projet/Database/DatabaseApp/app/build/intermediates/res/merged/debug/layout-v11/notification_media_cancel_action.xml",
+        "source": "/home/colin/.android/build-cache/0c3a88bfa00b76e6b5c7ff3174fb1a64d8885857/output/res/layout-v11/notification_media_cancel_action.xml"
+    }
+]
