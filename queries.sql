@@ -50,10 +50,14 @@ Where P.id = I.person_id and P.id = C.person_id and P.id = Pen.artist_id and I.s
 Group By P.name
 
 /*h) Print all non-reprinted stories involving Batman as a non-featured character */
-Select S
-From Characters C, Has_charaters HC (
-  Select S
-  From Story S, StoryReprint SR
-  Where not exists (select * from  StoryReprint SR where SR.origin_id = S.id)
-)
-Where C.name = 'Batman' and C.id = HC.character_id and S.id = HC.story_id
+Select S.title
+From Characters C, Feature F, Main M, Story S
+Where
+  S.id = (Select S2.id
+        From Story S2, StoryReprint SR
+        Where not exists (Select S3.id
+                          From Story S3
+                          Where SR.origin_id = S3.id
+                          Group By S3.id)
+       )
+  and  C.name = 'Batman' and C.id = M.character_id and C.id != F.character_id and S.id = M.story_id
