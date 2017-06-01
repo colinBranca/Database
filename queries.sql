@@ -1,13 +1,16 @@
+/*PART 2*/
+
 /*a) Print the brand group names with the highest number of Belgian indicia publishers */
-Select BG.name
-From BrandGroup BG, (
-  Select COUNT(distinct *)
-  From Publisher P, (
-    Select *
-    From IndiciaPublisher IP, Country C
-    Where IP.country_id = C.id and C.name = 'Belgium')
-  Where P.id = IP.publisher_id)
-Where BG.publisher_id = P.id and P.ROWNUM = 1
+SELECT BG.name  
+FROM BrandGroup BG, 
+  (	SELECT coupid.pid AS topid
+	FROM (	SELECT IP.publisher_id AS pid
+			FROM IndiciaPublisher IP, Country C
+			WHERE IP.country_id = C.id and C.name = 'Belgium'
+			GROUP BY IP.publisher_id
+			ORDER BY COUNT(IP.id) DESC) coupid
+  WHERE ROWNUM = 1) toppub
+WHERE BG.publisher_id = toppub.topid
 
 
 /*b) Print the ids and names of publishers of Danish book series*/
@@ -50,14 +53,62 @@ Where P.id = I.person_id and P.id = C.person_id and P.id = Pen.artist_id and I.s
 Group By P.name
 
 /*h) Print all non-reprinted stories involving Batman as a non-featured character */
-Select S.title
-From Characters C, Feature F, Main M, Story S
-Where
-  S.id = (Select S2.id
-        From Story S2, StoryReprint SR
-        Where not exists (Select S3.id
-                          From Story S3
-                          Where SR.origin_id = S3.id
-                          Group By S3.id)
-       )
-  and  C.name = 'Batman' and C.id = M.character_id and C.id != F.character_id and S.id = M.story_id
+SELECT S.title
+FROM Characters C, Feature F, Main M, Story S, (
+  SELECT S2.id
+  FROM Story S2, StoryReprint SR
+  WHERE NOT EXISTS (Select S3.id
+                    From Story S3
+                    Where SR.origin_id = S3.id
+                    Group By S3.id)
+  ) noreprint
+WHERE LOWER(C.name) LIKE '%batman%' AND
+                    C.id = M.character_id AND
+                    C.id <> F.character_id AND
+                    noreprint.id = M.story_id
+					
+/*PART 3*/
+
+/*a) Print the series names that have the highest number of issues which contain a story whose type is not the one occurring most frequently in the database */
+SELECT SE.name
+FROM SERIES SE,
+	(SELECT DISTINCT I.name, I.series_id
+	FROM ISSUE I, STORY S,
+		(SELECT mycount.typeid as id
+		FROM (SELECT ST.id AS typeid
+				FROM STORY_TYPE ST, STORY S
+				WHERE S.type_id = ST.id
+				GROUP BY S.type_id
+				ORDER BY COUNT(S.id) DESC) mycount
+		WHERE ROWNUM = 1) maxtype
+	WHERE S.issue_id = I.id AND S.type_id <> maxtype.id) myissues
+WHERE myissues.series_id = SE.id AND ROWNUM = 1
+GROUP BY myissues.series_id
+ORDER BY COUNT(myissues.series_id) DESC
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
