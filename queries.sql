@@ -87,28 +87,48 @@ GROUP BY myissues.series_id
 ORDER BY COUNT(myissues.series_id) DESC
 
 
+/*f) Print the languages that have more than 10000 original stories published in magazines, along with the
+number of those stories. */ 
+Select L.name, Res.num
+From (Select SE.language_id as id, Count(SE.language_id) as num
+		From Story ST, Series SE, Issue I
+		Where ST.issue_id = I.id and I.series_id = SE.id and SE.publication_type = 'magazine'
+		Group By SE.language_id
+		Having Count(*) > 10000) Res, Language L
+Where L.id = Res.id;
+
+/*g) Print all story types that have not been published as a part of Italian magazine series */
+Select Type.name
+From Story_Type Type
+Where Type.id not in (
+	Select distinct ST.type_id
+	From Story ST, Series SE, Issue I, Language L
+	Where ST.issue_id = I.id and I.series_id = SE.id and SE.language_id = L.id and L.name = 'Italian' and SE.publication_type = 'magazine');
+	
+/*h) Print the writers of cartoon stories who have worked as writers for more than one indicia publisher */
+Select Pe.name
+From (Select distinct P.name as name, P.id
+		From Persons P, Authors A
+		Where P.id = A.persons_id and A.story_id in(
+			Select S.id
+			From Story S, Story_type ST
+			Where S.type_id = ST.id and ST.name = 'cartoon')) Pe, Authors A, Story S, Issue I, IndiciaPublisher IP
+		Where Pe.id = A.persons_id and A.story_id = S.id and S.issue_id = I.id and I.indicia_publisher_id = IP.id
+		Group by Pe.name
+		Having Count(*) > 2;
 
 
+/*i) Print the 10 brand groups with the highest number of indicia publishers */
+Select Br.name 
+From(Select B.name
+		From Brandgroup B, Publisher P, IndiciaPublisher IP
+		Where B.id = P.id and P.id = IP.publisher_id
+		Group By B.name
+		Order By Count(B.name) DESC) Br
+Where ROWNUM <= 10;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*j) Print the average series length (in terms of years) per indicia publisher. */
+Select IP.name, ROUND(AVG(CAST(S.year_ended+1 - S.year_began as FLOAT)), 2)
+From Series S, Publisher P, IndiciaPublisher IP
+Where S.publisher_id = P.id and IP.publisher_id = P.id
+Group By IP.name;
