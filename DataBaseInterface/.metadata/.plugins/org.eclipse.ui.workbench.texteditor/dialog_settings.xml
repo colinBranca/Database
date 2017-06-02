@@ -9,8 +9,8 @@
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
 			<item value="tableInsert"/>
-			<item value="createTableItems"/>
 			<item value="combo"/>
+			<item value="createTableItems"/>
 			<item value="tableIn"/>
 			<item value="hello"/>
 			<item value="hell"/>

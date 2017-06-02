@@ -1,4 +1,0 @@
-#Tue May 23 10:14:50 CEST 2017
-base.0=/home/colin/Documents/EPFL/3e année/Database/Projet/Database/DatabaseApp/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_2
-renamed.0=classes.dex
-file.0=/home/colin/Documents/EPFL/3e année/Database/Projet/Database/DatabaseApp/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_2/classes.dex

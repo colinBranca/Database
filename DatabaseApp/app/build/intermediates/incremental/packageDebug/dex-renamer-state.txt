@@ -1,7 +1,0 @@
-#Tue May 23 10:14:51 CEST 2017
-base.0=/home/colin/Documents/EPFL/3e année/Database/Projet/Database/DatabaseApp/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_28703a747dc952555ca3241ce74c065c41e53619
-renamed.1=classes2.dex
-renamed.0=classes.dex
-file.1=/home/colin/Documents/EPFL/3e année/Database/Projet/Database/DatabaseApp/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_1cba95c80b94df687bc2cc8433d0b1f594b58c69/classes.dex
-base.1=/home/colin/Documents/EPFL/3e année/Database/Projet/Database/DatabaseApp/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_1cba95c80b94df687bc2cc8433d0b1f594b58c69
-file.0=/home/colin/Documents/EPFL/3e année/Database/Projet/Database/DatabaseApp/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_28703a747dc952555ca3241ce74c065c41e53619/classes.dex
