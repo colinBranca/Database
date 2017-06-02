@@ -1,8 +1,8 @@
 /*PART 2*/
 
 /*a) Print the brand group names with the highest number of Belgian indicia publishers */
-SELECT BG.name  
-FROM BrandGroup BG, 
+SELECT BG.name
+FROM BrandGroup BG,
   (	SELECT coupid.pid AS topid
 	FROM (	SELECT IP.publisher_id AS pid
 			FROM IndiciaPublisher IP, Country C
@@ -66,7 +66,7 @@ WHERE LOWER(C.name) LIKE '%batman%' AND
                     C.id = M.character_id AND
                     C.id <> F.character_id AND
                     noreprint.id = M.story_id
-					
+
 /*PART 3*/
 
 /*a) Print the series names that have the highest number of issues which contain a story whose type is not the one occurring most frequently in the database */
@@ -117,7 +117,7 @@ Where P.id = A.persons_id and P.id = Pen.artist_id and MyTable.id = A.story_id a
 
 
 /*f) Print the languages that have more than 10000 original stories published in magazines, along with the
-number of those stories. */ 
+number of those stories. */
 Select L.name, Res.num
 From (Select SE.language_id as id, Count(SE.language_id) as num
 		From Story ST, Series SE, Issue I
@@ -133,7 +133,7 @@ Where Type.id not in (
 	Select distinct ST.type_id
 	From Story ST, Series SE, Issue I, Language L
 	Where ST.issue_id = I.id and I.series_id = SE.id and SE.language_id = L.id and L.name = 'Italian' and SE.publication_type = 'magazine');
-	
+
 /*h) Print the writers of cartoon stories who have worked as writers for more than one indicia publisher */
 Select Pe.name
 From (Select distinct P.name as name, P.id
@@ -148,7 +148,7 @@ From (Select distinct P.name as name, P.id
 
 
 /*i) Print the 10 brand groups with the highest number of indicia publishers */
-Select Br.name 
+Select Br.name
 From(Select B.name
 		From Brandgroup B, Publisher P, IndiciaPublisher IP
 		Where B.id = P.id and P.id = IP.publisher_id
@@ -163,7 +163,7 @@ Where S.publisher_id = P.id and IP.publisher_id = P.id
 Group By IP.name;
 
 /*k) Print the top 10 indicia publishers that have published the most single-issue series */
-Select MyIndiciaPublisher.name 
+Select MyIndiciaPublisher.name
 From (Select IP.name as name, Count(distinct MyUniqueIssueSeries.id)
 		From Publisher P, IndiciaPublisher IP, Series S, (Select MySeries.id as id
                                         From (Select S.id as id, Count(I.id) as num
@@ -177,7 +177,21 @@ From (Select IP.name as name, Count(distinct MyUniqueIssueSeries.id)
 Where ROWNUM <= 10;
 
 /*l) Print the 10 indicia publishers with the highest number of script writers in a single story. */
-
+Select IP1.name
+From (
+    Select IP.name as name, Count(distinct myStory.id)
+    From IndiciaPublisher IP, Issue I, Story S,
+        (
+        Select A.Story_id as id, Count(A.Persons_id) as num
+        From Authors A
+        Group By A.Story_id
+        Order By Count(A.Persons_id) DESC
+        ) myStory
+    Where IP.id = I.INDICIA_PUBLISHER_ID AND I.id = S.ISSUE_ID AND myStory.id = S.id
+    Group by IP.name
+    order by Count(distinct myStory.id) DESC
+    ) IP1
+Where ROWNUM <= 10 ;
 /*m) Print all Marvel heroes that appear in Marvel-DC story crossovers. */
 
 /*n) Print the top 5 series with most issues */
