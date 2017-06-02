@@ -114,7 +114,17 @@ From Persons P, Authors A, Pencils Pen, (Select S.id as id
 Where P.id = A.persons_id and P.id = Pen.artist_id and MyTable.id = A.story_id and MyTable.id = Pen.story_id;
 
 /*e) For each of the top-10 publishers in terms of published series, print the 3 most popular languages of their series. */
-
+Select L.id, Count(S.id)
+From Series S, Language L, (Select MyPublisher.id as id
+                              From (Select P.id as id, Count(S.id)
+                                    From Publisher P, IndiciaPublisher IP, Series S
+                                    Where IP.publisher_id = P.id and S.publisher_id = P.id
+                                    Group by P.id
+                                    Order by Count(S.id) desc) MyPublisher
+                              Where ROWNUM <= 10) MyTopPublisher
+Where S.publisher_id = MyTopPublisher.id and S.language_id = L.id
+Group by L.id
+Order by Count(S.id) desc
 
 /*f) Print the languages that have more than 10000 original stories published in magazines, along with the
 number of those stories. */
@@ -193,7 +203,32 @@ From (
     ) IP1
 Where ROWNUM <= 10 ;
 /*m) Print all Marvel heroes that appear in Marvel-DC story crossovers. */
+Select distinct C1.name
+From
+(Select C.id as id, C.name as name
+From Indiciapublisher IP, Characters C, Main M, Feature F, Issue I, Story S
+Where Lower(IP.name) like '%marvel%' and Lower(IP.name) like '%dc%' and I.indicia_publisher_id = IP.id and S.issue_id = I.id and ((F.story_id = S.id and F.character_id = C.id)
+OR (M.story_id = S.id and M.character_id = C.id))) C1,
 
+(Select C.id as id, C.name as name
+From Characters C, Main M, Feature F, Issue I, IndiciaPublisher IP, Story S
+Where Lower(IP.name) like '%marvel%' and I.indicia_publisher_id = IP.id and S.issue_id = I.id and ((F.story_id = S.id and F.character_id = C.id)
+OR (M.story_id = S.id and M.character_id = C.id))) C2
+
+Where C1.id = C2.id;
 /*n) Print the top 5 series with most issues */
+Select S.name
+From Series S, 
+    (Select I.series_id as id, Count(I.id)
+    From Issue I
+    Group by I.series_id
+    Order by Count(I.id) desc) MyIssue
+Where S.id = MyIssue.id and ROWNUM <= 10
 
 /*o) Given an issue, print its most reprinted story. */
+Select S.title
+From Issue I, Story S, (Select SR.origin_id as id, Count(SR.target_id)
+                        From StoryReprint SR
+                        Group by SR.origin_id
+                        Order by Count(SR.target_id) desc) MyMostReprinted
+Where I.id = elem and I.id = S.issue_id and S.id = MyMostReprinted.id and ROWNUM = 1;
