@@ -86,6 +86,35 @@ WHERE myissues.series_id = SE.id AND ROWNUM = 1
 GROUP BY myissues.series_id
 ORDER BY COUNT(myissues.series_id) DESC
 
+/*b) Print the names of publishers who have series with all series types */
+Select P.name
+From Publisher P, (Select distinct P.id as id, Count(distinct S.publication_type) as num
+                    From Publisher P, Series S
+                    Where S.publisher_id = P.id
+                    Group by P.id) MyP
+Where P.id = MyP. id and MyP.num = (Select Count(distinct S.publication_Type) From Series S);
+
+/*c) Print the 10 most-reprinted characters from Alan Moore's stories. */
+Select MyTable.MyName
+From (
+      Select C.name as MyName, Count(C.name) as MyCount
+      From Main M, Feature F, Characters C, (Select S.id as Myid
+                                              From Story S, Persons P, Authors A, StoryReprint SR
+                                              Where P.id = A.persons_id and Lower(P.name) like '%alan moore%' and A.story_id = S.id and S.id = SR.target_id) Stid
+Where ((C.id = M.character_id  and M.story_id in Stid.Myid) OR (C.id = F.character_id and F.story_id in Stid.Myid))
+Group By C.name
+Order By Count(C.name) desc) MyTable
+Where ROWNUM <= 10;
+
+/*d) Print the writers of nature-related stories that have also done the pencilwork in all their nature-related stories. */
+Select distinct P.name
+From Persons P, Authors A, Pencils Pen, (Select S.id as id
+											From Story S, Genre G, Has_Genre HG
+											Where S.id = HG.story_id and HG.genre_id = G.id and LOWER(G.name) LIKE '%nature%') MyTable
+Where P.id = A.persons_id and P.id = Pen.artist_id and MyTable.id = A.story_id and MyTable.id = Pen.story_id;
+
+/*e) For each of the top-10 publishers in terms of published series, print the 3 most popular languages of their series. */
+
 
 /*f) Print the languages that have more than 10000 original stories published in magazines, along with the
 number of those stories. */ 
@@ -132,3 +161,13 @@ Select IP.name, ROUND(AVG(CAST(S.year_ended+1 - S.year_began as FLOAT)), 2)
 From Series S, Publisher P, IndiciaPublisher IP
 Where S.publisher_id = P.id and IP.publisher_id = P.id
 Group By IP.name;
+
+/*k) Print the top 10 indicia publishers that have published the most single-issue series */
+
+/*l) Print the 10 indicia publishers with the highest number of script writers in a single story. */
+
+/*m) Print all Marvel heroes that appear in Marvel-DC story crossovers. */
+
+/*n) Print the top 5 series with most issues */
+
+/*o) Given an issue, print its most reprinted story. */
