@@ -204,6 +204,7 @@ From (
     order by Count(distinct myStory.id) DESC
     ) IP1
 Where ROWNUM <= 10 ;
+
 /*m) Print all Marvel heroes that appear in Marvel-DC story crossovers. */
 Select distinct C1.name
 From
@@ -218,6 +219,7 @@ Where Lower(IP.name) like '%marvel%' and I.indicia_publisher_id = IP.id and S.is
 OR (M.story_id = S.id and M.character_id = C.id))) C2
 
 Where C1.id = C2.id;
+
 /*n) Print the top 5 series with most issues */
 Select S.name
 From Series S, 
