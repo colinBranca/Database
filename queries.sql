@@ -114,17 +114,19 @@ From Persons P, Authors A, Pencils Pen, (Select S.id as id
 Where P.id = A.persons_id and P.id = Pen.artist_id and MyTable.id = A.story_id and MyTable.id = Pen.story_id;
 
 /*e) For each of the top-10 publishers in terms of published series, print the 3 most popular languages of their series. */
-Select L.id, Count(S.id)
-From Series S, Language L, (Select MyPublisher.id as id
-                              From (Select P.id as id, Count(S.id)
-                                    From Publisher P, IndiciaPublisher IP, Series S
-                                    Where IP.publisher_id = P.id and S.publisher_id = P.id
-                                    Group by P.id
-                                    Order by Count(S.id) desc) MyPublisher
-                              Where ROWNUM <= 10) MyTopPublisher
-Where S.publisher_id = MyTopPublisher.id and S.language_id = L.id
-Group by L.id
-Order by Count(S.id) desc
+Select P.name, L.name
+From Publisher P, Language L, (Select MyTopPublisher.id as pubid, L.id as lid, Count(S.id)
+  From Series S, Language L, (Select MyPublisher.id as id
+                                From (Select P.id as id, Count(S.id)
+                                      From Publisher P, IndiciaPublisher IP, Series S
+                                      Where IP.publisher_id = P.id and S.publisher_id = P.id
+                                      Group by P.id
+                                      Order by Count(S.id) desc) MyPublisher
+                                Where ROWNUM <= 10) MyTopPublisher
+  Where S.publisher_id = MyTopPublisher.id and S.language_id = L.id
+  Group by (MyTopPublisher.id, L.id)
+  Order by (MyTopPublisher.id) desc, Count(S.id) desc) yolo
+Where P.id = yolo.pubid and L.id = yolo.lid
 
 /*f) Print the languages that have more than 10000 original stories published in magazines, along with the
 number of those stories. */
