@@ -163,6 +163,18 @@ Where S.publisher_id = P.id and IP.publisher_id = P.id
 Group By IP.name;
 
 /*k) Print the top 10 indicia publishers that have published the most single-issue series */
+Select MyIndiciaPublisher.name 
+From (Select IP.name as name, Count(distinct MyUniqueIssueSeries.id)
+		From Publisher P, IndiciaPublisher IP, Series S, (Select MySeries.id as id
+                                        From (Select S.id as id, Count(I.id) as num
+                                              From Issue I, Series S
+                                              Where I.series_id = S.id
+                                              Group by S.id) MySeries
+                                        Where MySeries.num = 1) MyUniqueIssueSeries
+		Where P.id = IP.publisher_id and MyUniqueIssueSeries.id = S.id and S.publisher_id = P.id
+		Group by IP.name
+		Order by Count(MyUniqueIssueSeries.id) desc) MyIndiciaPublisher
+Where ROWNUM <= 10;
 
 /*l) Print the 10 indicia publishers with the highest number of script writers in a single story. */
 
